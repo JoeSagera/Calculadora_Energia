@@ -1,30 +1,30 @@
-import type { Scenario } from '../types'
+import type { Scenario, ActiveCounts } from '../types'
+
+function fullCounts(catalog: { equipment: { id: string; quantity: number }[] }[]): ActiveCounts {
+  const counts: ActiveCounts = {}
+  for (const area of catalog) {
+    for (const eq of area.equipment) {
+      counts[eq.id] = eq.quantity
+    }
+  }
+  return counts
+}
 
 export const scenarios: Scenario[] = [
   {
     id: 'all-on',
     name: 'Todo Encendido',
     icon: '⚡',
-    description: 'Todos los equipos activos — consumo máximo estimado',
-    pcCount: 11,
-    getEquipmentIds: (catalog) => {
-      const ids = new Set<string>()
-      for (const area of catalog) {
-        for (const eq of area.equipment) {
-          ids.add(eq.id)
-        }
-      }
-      return ids
-    },
+    description: 'Todos los equipos al máximo',
+    getCounts: (catalog) => fullCounts(catalog),
   },
   {
     id: 'essentials',
     name: 'Solo Esenciales',
     icon: '🛡️',
-    description: 'Refrigeración, red y seguridad — lo mínimo para operar',
-    pcCount: 0,
-    getEquipmentIds: (catalog) => {
-      const ids = new Set<string>()
+    description: 'Refrigeración, red y seguridad',
+    getCounts: (catalog) => {
+      const counts: ActiveCounts = {}
       for (const area of catalog) {
         for (const eq of area.equipment) {
           if (
@@ -33,21 +33,20 @@ export const scenarios: Scenario[] = [
             eq.category === 'red' ||
             eq.category === 'seguridad'
           ) {
-            ids.add(eq.id)
+            counts[eq.id] = eq.quantity
           }
         }
       }
-      return ids
+      return counts
     },
   },
   {
     id: 'gaming',
     name: 'Gaming Activo',
     icon: '🎮',
-    description: 'PCs, PS5, VR + refrigeración y red — sin cocina ni AC',
-    pcCount: 11,
-    getEquipmentIds: (catalog) => {
-      const ids = new Set<string>()
+    description: 'Gaming + refrigeración y red — sin cocina ni AC',
+    getCounts: (catalog) => {
+      const counts: ActiveCounts = {}
       for (const area of catalog) {
         for (const eq of area.equipment) {
           if (
@@ -57,21 +56,20 @@ export const scenarios: Scenario[] = [
             eq.category === 'seguridad' ||
             eq.category === 'entretenimiento'
           ) {
-            ids.add(eq.id)
+            counts[eq.id] = eq.quantity
           }
         }
       }
-      return ids
+      return counts
     },
   },
   {
     id: 'extreme-save',
     name: 'Ahorro Extremo',
     icon: '🔋',
-    description: 'Solo refrigeración, red, seguridad + 2 PCs — mínimo consumo',
-    pcCount: 2,
-    getEquipmentIds: (catalog) => {
-      const ids = new Set<string>()
+    description: 'Refrigeración, red, seguridad + 2 PCs',
+    getCounts: (catalog) => {
+      const counts: ActiveCounts = {}
       for (const area of catalog) {
         for (const eq of area.equipment) {
           if (
@@ -79,14 +77,14 @@ export const scenarios: Scenario[] = [
             eq.category === 'red' ||
             eq.category === 'seguridad'
           ) {
-            ids.add(eq.id)
+            counts[eq.id] = eq.quantity
           }
           if (eq.id === 'pc-gamer') {
-            ids.add(eq.id)
+            counts[eq.id] = 2
           }
         }
       }
-      return ids
+      return counts
     },
   },
 ]

@@ -14,10 +14,10 @@ export function ScenarioBar() {
       return
     }
 
-    const equipmentIds = scenario.getEquipmentIds(catalog)
+    const counts = scenario.getCounts(catalog)
     dispatch({
       type: 'APPLY_SCENARIO',
-      payload: { scenarioId, equipmentIds, pcCount: scenario.pcCount },
+      payload: { scenarioId, equipmentIds: new Set(Object.keys(counts)), counts },
     })
   }
 

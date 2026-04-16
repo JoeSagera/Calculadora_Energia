@@ -1,32 +1,42 @@
-import { createContext, useContext, useReducer, useMemo, type ReactNode } from 'react'
+import { createContext, useContext, useReducer, useMemo, useEffect, type ReactNode } from 'react'
 import type { AppState, AppAction } from '../types'
-import { PC_GAMER_ID } from '../types'
 import { catalog } from '../data/catalog'
 import { getPowerInfo } from '../utils/calculations'
+import { saveState, loadState } from '../utils/storage'
 import type { PowerInfo } from '../types'
 
+const persisted = loadState()
+
 const initialState: AppState = {
+  activeEquipment: persisted.activeEquipment,
+  expandedAreas: new Set<string>(),
+  activeScenario: null,
+  activeCounts: persisted.activeCounts,
+  batteryPercentage: persisted.batteryPercentage,
+}
+
+const cleanState: AppState = {
   activeEquipment: new Set<string>(),
   expandedAreas: new Set<string>(),
   activeScenario: null,
-  activePcCount: 0,
+  activeCounts: {},
   batteryPercentage: 100,
 }
 
 function reducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case 'TOGGLE_EQUIPMENT': {
-      const { id } = action.payload
+      const { id, quantity } = action.payload
       const next = new Set(state.activeEquipment)
-      let pcCount = state.activePcCount
+      const nextCounts = { ...state.activeCounts }
       if (next.has(id)) {
         next.delete(id)
-        if (id === PC_GAMER_ID) pcCount = 0
+        delete nextCounts[id]
       } else {
         next.add(id)
-        if (id === PC_GAMER_ID && pcCount === 0) pcCount = 11
+        nextCounts[id] = quantity
       }
-      return { ...state, activeEquipment: next, activeScenario: null, activePcCount: pcCount }
+      return { ...state, activeEquipment: next, activeScenario: null, activeCounts: nextCounts }
     }
 
     case 'TOGGLE_AREA': {
@@ -35,45 +45,48 @@ function reducer(state: AppState, action: AppAction): AppState {
       if (!area) return state
 
       const next = new Set(state.activeEquipment)
-      let pcCount = state.activePcCount
+      const nextCounts = { ...state.activeCounts }
       for (const eq of area.equipment) {
         if (activate) {
           next.add(eq.id)
-          if (eq.id === PC_GAMER_ID && pcCount === 0) pcCount = eq.quantity
+          nextCounts[eq.id] = eq.quantity
         } else {
           next.delete(eq.id)
-          if (eq.id === PC_GAMER_ID) pcCount = 0
+          delete nextCounts[eq.id]
         }
       }
-      return { ...state, activeEquipment: next, activeScenario: null, activePcCount: pcCount }
+      return { ...state, activeEquipment: next, activeScenario: null, activeCounts: nextCounts }
     }
 
     case 'APPLY_SCENARIO': {
-      const { scenarioId, equipmentIds, pcCount } = action.payload
+      const { scenarioId, counts } = action.payload
       return {
         ...state,
-        activeEquipment: new Set(equipmentIds),
+        activeEquipment: new Set(Object.keys(counts)),
         activeScenario: scenarioId,
-        activePcCount: pcCount ?? state.activePcCount,
+        activeCounts: { ...counts },
       }
     }
 
-    case 'SET_PC_COUNT': {
-      const { count } = action.payload
+    case 'SET_COUNT': {
+      const { id, count } = action.payload
       const next = new Set(state.activeEquipment)
+      const nextCounts = { ...state.activeCounts }
       if (count > 0) {
-        next.add(PC_GAMER_ID)
+        next.add(id)
+        nextCounts[id] = count
       } else {
-        next.delete(PC_GAMER_ID)
+        next.delete(id)
+        delete nextCounts[id]
       }
-      return { ...state, activeEquipment: next, activeScenario: null, activePcCount: count }
+      return { ...state, activeEquipment: next, activeScenario: null, activeCounts: nextCounts }
     }
 
     case 'SET_BATTERY':
       return { ...state, batteryPercentage: action.payload.percentage }
 
     case 'RESET':
-      return initialState
+      return cleanState
 
     case 'TOGGLE_AREA_EXPAND': {
       const { areaId } = action.payload
@@ -102,9 +115,13 @@ const PowerContext = createContext<PowerContextValue | null>(null)
 export function PowerProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState)
 
+  useEffect(() => {
+    saveState(state)
+  }, [state])
+
   const powerInfo = useMemo(
-    () => getPowerInfo(state.activeEquipment, catalog, state.activePcCount, state.batteryPercentage),
-    [state.activeEquipment, state.activePcCount, state.batteryPercentage],
+    () => getPowerInfo(state.activeEquipment, catalog, state.activeCounts, state.batteryPercentage),
+    [state.activeEquipment, state.activeCounts, state.batteryPercentage],
   )
 
   const value = useMemo(

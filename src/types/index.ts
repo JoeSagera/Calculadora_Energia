@@ -34,24 +34,23 @@ export interface Area {
 
 // ===== State Types =====
 
-export const PC_GAMER_ID = 'pc-gamer'
-export const PC_MAX_COUNT = 11
+export type ActiveCounts = Record<string, number>
 
 export interface AppState {
   activeEquipment: Set<string>
   expandedAreas: Set<string>
   activeScenario: string | null
-  activePcCount: number
+  activeCounts: ActiveCounts
   batteryPercentage: number
 }
 
 export type AppAction =
-  | { type: 'TOGGLE_EQUIPMENT'; payload: { id: string } }
+  | { type: 'TOGGLE_EQUIPMENT'; payload: { id: string; quantity: number } }
   | { type: 'TOGGLE_AREA'; payload: { areaId: string; activate: boolean } }
-  | { type: 'APPLY_SCENARIO'; payload: { scenarioId: string; equipmentIds: Set<string>; pcCount?: number } }
+  | { type: 'APPLY_SCENARIO'; payload: { scenarioId: string; equipmentIds: Set<string>; counts: ActiveCounts } }
   | { type: 'RESET' }
   | { type: 'TOGGLE_AREA_EXPAND'; payload: { areaId: string } }
-  | { type: 'SET_PC_COUNT'; payload: { count: number } }
+  | { type: 'SET_COUNT'; payload: { id: string; count: number } }
   | { type: 'SET_BATTERY'; payload: { percentage: number } }
 
 // ===== Scenario Types =====
@@ -61,8 +60,7 @@ export interface Scenario {
   name: string
   icon: string
   description: string
-  pcCount: number
-  getEquipmentIds: (catalog: Area[]) => Set<string>
+  getCounts: (catalog: Area[]) => ActiveCounts
 }
 
 // ===== Derived Types =====

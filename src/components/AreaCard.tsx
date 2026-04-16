@@ -1,7 +1,6 @@
 import { usePower } from '../context/PowerContext'
 import { EquipmentRow } from './EquipmentRow'
 import { formatWatts } from '../utils/calculations'
-import { PC_GAMER_ID } from '../types'
 import type { Area } from '../types'
 
 export function AreaCard({ area }: { area: Area }) {
@@ -9,11 +8,10 @@ export function AreaCard({ area }: { area: Area }) {
   const isExpanded = state.expandedAreas.has(area.id)
 
   const areaPower = powerInfo.areaBreakdown.find((a) => a.areaId === area.id)
-  const visibleEquipment = area.equipment.filter((eq) => eq.id !== PC_GAMER_ID)
-  const activeCount = visibleEquipment.filter((eq) =>
+  const activeCount = area.equipment.filter((eq) =>
     state.activeEquipment.has(eq.id),
   ).length
-  const allActive = activeCount === visibleEquipment.length && visibleEquipment.length > 0
+  const allActive = activeCount === area.equipment.length && area.equipment.length > 0
 
   function handleToggleAll() {
     dispatch({ type: 'TOGGLE_AREA', payload: { areaId: area.id, activate: !allActive } })
@@ -36,7 +34,7 @@ export function AreaCard({ area }: { area: Area }) {
             {area.name}
           </h3>
           <p className="text-xs text-text-muted">
-            {activeCount}/{visibleEquipment.length} equipos
+            {activeCount}/{area.equipment.length} equipos
             {areaPower && areaPower.watts > 0 && (
               <> · {formatWatts(areaPower.watts)}</>
             )}
@@ -63,7 +61,7 @@ export function AreaCard({ area }: { area: Area }) {
             </button>
           </div>
           <div className="space-y-1">
-            {visibleEquipment.map((eq) => (
+            {area.equipment.map((eq) => (
               <EquipmentRow key={eq.id} equipment={eq} />
             ))}
           </div>

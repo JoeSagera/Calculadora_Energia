@@ -1,13 +1,12 @@
-import type { Area, PowerInfo, PowerLevel, AreaPowerBreakdown } from '../types'
-import { PC_GAMER_ID } from '../types'
+import type { Area, PowerInfo, PowerLevel, AreaPowerBreakdown, ActiveCounts } from '../types'
 import { INVERTER_CAPACITY } from '../data/catalog'
 
-export const BATTERY_TOTAL_WH = 30000 // 2 × 15kWh = 30kWh
+export const BATTERY_TOTAL_WH = 30000
 
 export function calculateTotalPower(
   activeIds: Set<string>,
   catalog: Area[],
-  activePcCount: number = 0,
+  activeCounts: ActiveCounts,
 ): { min: number; max: number } {
   let min = 0
   let max = 0
@@ -15,13 +14,9 @@ export function calculateTotalPower(
   for (const area of catalog) {
     for (const eq of area.equipment) {
       if (activeIds.has(eq.id)) {
-        if (eq.id === PC_GAMER_ID) {
-          min += eq.powerMin * activePcCount
-          max += eq.powerMax * activePcCount
-        } else {
-          min += eq.powerMin * eq.quantity
-          max += eq.powerMax * eq.quantity
-        }
+        const count = activeCounts[eq.id] ?? eq.quantity
+        min += eq.powerMin * count
+        max += eq.powerMax * count
       }
     }
   }
@@ -43,24 +38,20 @@ export function estimateAutonomy(totalWatts: number): number {
 
 export function estimateBatteryTime(totalWatts: number, batteryPercentage: number): number {
   if (totalWatts === 0) return Infinity
-  const batteryWh = BATTERY_TOTAL_WH * (batteryPercentage / 100)
-  return batteryWh / totalWatts
+  return (BATTERY_TOTAL_WH * (batteryPercentage / 100)) / totalWatts
 }
 
 export function getAreaBreakdown(
   activeIds: Set<string>,
   catalog: Area[],
-  activePcCount: number = 0,
+  activeCounts: ActiveCounts,
 ): AreaPowerBreakdown[] {
   return catalog.map((area) => {
     let watts = 0
     for (const eq of area.equipment) {
       if (activeIds.has(eq.id)) {
-        if (eq.id === PC_GAMER_ID) {
-          watts += eq.powerMax * activePcCount
-        } else {
-          watts += eq.powerMax * eq.quantity
-        }
+        const count = activeCounts[eq.id] ?? eq.quantity
+        watts += eq.powerMax * count
       }
     }
     return {
@@ -72,12 +63,17 @@ export function getAreaBreakdown(
   })
 }
 
-export function getPowerInfo(activeIds: Set<string>, catalog: Area[], activePcCount: number = 0, batteryPercentage: number = 100): PowerInfo {
-  const { max } = calculateTotalPower(activeIds, catalog, activePcCount)
+export function getPowerInfo(
+  activeIds: Set<string>,
+  catalog: Area[],
+  activeCounts: ActiveCounts,
+  batteryPercentage: number = 100,
+): PowerInfo {
+  const { max } = calculateTotalPower(activeIds, catalog, activeCounts)
   const percentage = INVERTER_CAPACITY > 0 ? (max / INVERTER_CAPACITY) * 100 : 0
   const level = getPowerLevel(percentage)
   const autonomyHours = estimateAutonomy(max)
-  const areaBreakdown = getAreaBreakdown(activeIds, catalog, activePcCount)
+  const areaBreakdown = getAreaBreakdown(activeIds, catalog, activeCounts)
   const batteryTimeLeft = estimateBatteryTime(max, batteryPercentage)
 
   return {
@@ -93,9 +89,7 @@ export function getPowerInfo(activeIds: Set<string>, catalog: Area[], activePcCo
 }
 
 export function formatWatts(watts: number): string {
-  if (watts >= 1000) {
-    return `${(watts / 1000).toFixed(1)}kW`
-  }
+  if (watts >= 1000) return `${(watts / 1000).toFixed(1)}kW`
   return `${Math.round(watts)}W`
 }
 
