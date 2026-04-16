@@ -79,3 +79,77 @@ h6 {
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
+
+/* --- PC Slider --- */
+.pc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--color-arcade-blue-gray) 0%, var(--color-arcade-blue-gray) 100%);
+  outline: none;
+  cursor: pointer;
+}
+
+.pc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-arcade-neon-magenta);
+  box-shadow: 0 0 10px rgba(255, 0, 212, 0.5);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.pc-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 20px rgba(255, 0, 212, 0.8);
+}
+
+.pc-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-arcade-neon-magenta);
+  box-shadow: 0 0 10px rgba(255, 0, 212, 0.5);
+  border: none;
+  cursor: pointer;
+}
+
+/* --- Battery Slider --- */
+.battery-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-arcade-blue-gray);
+  outline: none;
+  cursor: pointer;
+}
+
+.battery-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-arcade-neon-yellow);
+  box-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.battery-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 20px rgba(255, 247, 0, 0.8);
+}
+
+.battery-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-arcade-neon-yellow);
+  box-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
+  border: none;
+  cursor: pointer;
+}

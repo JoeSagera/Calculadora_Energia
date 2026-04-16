@@ -1,37 +1,42 @@
+import { PowerProvider } from './context/PowerContext'
+import { Header } from './components/Header'
+import { PowerGauge } from './components/PowerGauge'
+import { AlertBanner } from './components/AlertBanner'
+import { BatteryPanel } from './components/BatteryPanel'
+import { ScenarioBar } from './components/ScenarioBar'
+import { PCSelector } from './components/PCSelector'
+import { AreaCard } from './components/AreaCard'
+import { catalog } from './data/catalog'
+
 function App() {
   return (
-    <div className="min-h-screen bg-arcade-darker text-arcade-white">
-      <header className="bg-arcade-dark border-b border-arcade-blue-gray/30 px-6 py-4">
-        <div className="mx-auto max-w-7xl flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-arcade-white">
-              ARCADE <span className="text-arcade-neon-magenta">CUBA</span>
-            </h1>
-            <p className="text-sm text-arcade-blue-gray">
-              Calculadora de Consumo Energético — Inversor 30kW
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-arcade-blue-gray">Capacidad del inversor</p>
-            <p className="text-2xl font-heading font-black text-arcade-neon-yellow">
-              30,000W
-            </p>
-          </div>
-        </div>
-      </header>
+    <PowerProvider>
+      <div className="min-h-screen bg-arcade-darker text-arcade-white">
+        <Header />
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="flex flex-col items-center justify-center gap-4 py-20">
-          <h2 className="text-4xl font-heading font-black uppercase text-arcade-neon-magenta">
-            Proyecto inicializado
-          </h2>
-          <p className="text-arcade-blue-gray text-lg">
-            SDD workflow en proceso — la calculadora viene en camino
-          </p>
-          <div className="mt-4 h-1 w-32 rounded-full bg-gradient-arcade" />
-        </div>
-      </main>
-    </div>
+        <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
+          <PowerGauge />
+          <AlertBanner />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <BatteryPanel />
+            <PCSelector />
+          </div>
+
+          <ScenarioBar />
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {catalog.map((area) => (
+              <AreaCard key={area.id} area={area} />
+            ))}
+          </div>
+        </main>
+
+        <footer className="border-t border-arcade-blue-gray/10 px-4 py-3 text-center text-xs text-arcade-blue-gray/50">
+          Arcade Cuba — Calculadora de Energía v1.0
+        </footer>
+      </div>
+    </PowerProvider>
   )
 }
 
