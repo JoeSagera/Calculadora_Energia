@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+/* ========================================
+   ARCADE CUBA — Brand Theme
+   Extracted from www.arcadecuba.com
+   ======================================== */
+
+@theme {
+  /* --- Brand Colors --- */
+  --color-arcade-dark: #191919;
+  --color-arcade-darker: #0d0d0d;
+  --color-arcade-blue: #00a8ff;
+  --color-arcade-blue-gray: #425b76;
+  --color-arcade-neon-yellow: #fff700;
+  --color-arcade-neon-magenta: #ff00d4;
+  --color-arcade-white: #ffffff;
+
+  /* --- Semantic Colors --- */
+  --color-power-safe: #22c55e;
+  --color-power-warning: #f59e0b;
+  --color-power-danger: #ef4444;
+  --color-power-critical: #dc2626;
+
+  /* --- Priority Colors --- */
+  --color-priority-critical: #ef4444;
+  --color-priority-high: #f59e0b;
+  --color-priority-medium: #00a8ff;
+  --color-priority-low: #6b7280;
+
+  /* --- Fonts --- */
+  --font-heading: "Barlow Condensed", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* --- Gradients --- */
+  --gradient-arcade: linear-gradient(140deg, #425b76, #ff00d4);
+  --gradient-arcade-hover: linear-gradient(140deg, #ff00d4, #425b76);
+}
+
+/* --- Scanline CRT Effect --- */
+.scanline {
+  position: relative;
+}
+
+.scanline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    #616161,
+    #616161 1px,
+    transparent 0,
+    transparent 5px
+  );
+  -webkit-mask-image: radial-gradient(rgba(0, 0, 0, 0.4), transparent 80%);
+  mask-image: radial-gradient(rgba(0, 0, 0, 0.4), transparent 80%);
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* --- Base Reset --- */
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--color-arcade-darker);
+  color: var(--color-arcade-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
