@@ -33,8 +33,8 @@ export function ScenarioBar() {
             title={scenario.description}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
               isActive
-                ? 'bg-gradient-arcade text-white shadow-lg shadow-arcade-neon-magenta/20'
-                : 'border border-arcade-blue-gray/30 bg-arcade-dark text-arcade-blue-gray hover:border-arcade-neon-magenta/50 hover:text-arcade-white'
+                ? 'bg-accent text-white shadow-lg shadow-accent/20'
+                : 'border border-white/10 bg-arcade-dark text-text-muted hover:border-white/20 hover:text-text-secondary'
             }`}
           >
             <span className="mr-1">{scenario.icon}</span>

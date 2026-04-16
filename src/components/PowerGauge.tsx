@@ -2,15 +2,22 @@ import { usePower } from '../context/PowerContext'
 import { formatWatts, formatHours } from '../utils/calculations'
 
 const levelStyles = {
-  safe: 'bg-power-safe',
-  warning: 'bg-power-warning',
-  danger: 'bg-power-danger',
-  critical: 'bg-power-critical animate-pulse',
+  safe: 'bg-status-ok',
+  warning: 'bg-status-warn',
+  danger: 'bg-status-danger',
+  critical: 'bg-status-danger animate-pulse',
+}
+
+const levelText = {
+  safe: 'text-status-ok',
+  warning: 'text-status-warn',
+  danger: 'text-status-danger',
+  critical: 'text-status-danger',
 }
 
 export function PowerGauge() {
   const { powerInfo } = usePower()
-  const { totalWatts, maxCapacity, percentage, level, autonomyHours } = powerInfo
+  const { totalWatts, maxCapacity, percentage, level } = powerInfo
 
   const clampedPercentage = Math.min(percentage, 100)
   const overflow = percentage > 100
@@ -18,33 +25,28 @@ export function PowerGauge() {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
-        <span className="text-arcade-blue-gray">
+        <span className="text-text-secondary">
           {formatWatts(totalWatts)} / {formatWatts(maxCapacity)}
         </span>
-        <span
-          className={`font-bold ${overflow ? 'text-power-critical animate-pulse' : 'text-arcade-white'}`}
-        >
+        <span className={`font-bold ${overflow ? 'text-status-danger animate-pulse' : levelText[level]}`}>
           {percentage.toFixed(1)}%
         </span>
       </div>
 
-      <div className="h-4 w-full overflow-hidden rounded-full bg-arcade-dark">
+      <div className="h-3 w-full overflow-hidden rounded-full bg-arcade-dark">
         <div
           className={`h-full rounded-full transition-all duration-500 ease-out ${levelStyles[level]}`}
           style={{ width: `${clampedPercentage}%` }}
         />
       </div>
 
-      <div className="flex items-center justify-between text-xs text-arcade-blue-gray">
+      <div className="flex items-center justify-between text-xs text-text-muted">
         <span>
-          Autonomía estimada:{' '}
-          <span className="text-arcade-neon-yellow font-semibold">
-            {formatHours(autonomyHours)}
-          </span>
+          Autonomía: <span className="text-text-primary font-semibold">{formatHours(powerInfo.autonomyHours)}</span>
         </span>
         {overflow && (
-          <span className="font-bold text-power-critical">
-            ⚠ EXCEDE {formatWatts(totalWatts - maxCapacity)}
+          <span className="font-bold text-status-danger">
+            EXCEDE {formatWatts(totalWatts - maxCapacity)}
           </span>
         )}
       </div>

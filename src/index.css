@@ -1,31 +1,30 @@
 @import "tailwindcss";
 
 /* ========================================
-   ARCADE CUBA — Brand Theme
-   Extracted from www.arcadecuba.com
+   ARCADE CUBA — Simplified Palette
+   
+   3 FUNCTIONAL: green (ok), amber (warn), red (danger)
+   1 ACCENT:     magenta (interactive active state)
+   TEXT:         white with opacity levels
    ======================================== */
 
 @theme {
-  /* --- Brand Colors --- */
+  /* --- Backgrounds --- */
   --color-arcade-dark: #191919;
   --color-arcade-darker: #0d0d0d;
-  --color-arcade-blue: #00a8ff;
-  --color-arcade-blue-gray: #425b76;
-  --color-arcade-neon-yellow: #fff700;
-  --color-arcade-neon-magenta: #ff00d4;
-  --color-arcade-white: #ffffff;
 
-  /* --- Semantic Colors --- */
-  --color-power-safe: #22c55e;
-  --color-power-warning: #f59e0b;
-  --color-power-danger: #ef4444;
-  --color-power-critical: #dc2626;
+  /* --- Functional Colors --- */
+  --color-status-ok: #22c55e;
+  --color-status-warn: #f59e0b;
+  --color-status-danger: #ef4444;
 
-  /* --- Priority Colors --- */
-  --color-priority-critical: #ef4444;
-  --color-priority-high: #f59e0b;
-  --color-priority-medium: #00a8ff;
-  --color-priority-low: #6b7280;
+  /* --- Accent (interactive only) --- */
+  --color-accent: #ff00d4;
+
+  /* --- Text --- */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
 
   /* --- Fonts --- */
   --font-heading: "Barlow Condensed", "Inter", system-ui, sans-serif;
@@ -33,29 +32,6 @@
 
   /* --- Gradients --- */
   --gradient-arcade: linear-gradient(140deg, #425b76, #ff00d4);
-  --gradient-arcade-hover: linear-gradient(140deg, #ff00d4, #425b76);
-}
-
-/* --- Scanline CRT Effect --- */
-.scanline {
-  position: relative;
-}
-
-.scanline::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    180deg,
-    #616161,
-    #616161 1px,
-    transparent 0,
-    transparent 5px
-  );
-  -webkit-mask-image: radial-gradient(rgba(0, 0, 0, 0.4), transparent 80%);
-  mask-image: radial-gradient(rgba(0, 0, 0, 0.4), transparent 80%);
-  pointer-events: none;
-  z-index: 50;
 }
 
 /* --- Base Reset --- */
@@ -63,7 +39,7 @@ body {
   margin: 0;
   font-family: var(--font-body);
   background-color: var(--color-arcade-darker);
-  color: var(--color-arcade-white);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -80,76 +56,39 @@ h6 {
   letter-spacing: 0.02em;
 }
 
-/* --- PC Slider --- */
-.pc-slider {
+/* --- Shared Slider Styles --- */
+.custom-slider {
   -webkit-appearance: none;
   appearance: none;
-  height: 8px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, var(--color-arcade-blue-gray) 0%, var(--color-arcade-blue-gray) 100%);
+  height: 6px;
+  border-radius: 3px;
+  background: #2a2a2a;
   outline: none;
   cursor: pointer;
 }
 
-.pc-slider::-webkit-slider-thumb {
+.custom-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--color-arcade-neon-magenta);
-  box-shadow: 0 0 10px rgba(255, 0, 212, 0.5);
+  background: var(--color-accent);
+  box-shadow: 0 0 8px rgba(255, 0, 212, 0.4);
   cursor: pointer;
   transition: box-shadow 0.2s;
 }
 
-.pc-slider::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 20px rgba(255, 0, 212, 0.8);
+.custom-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 16px rgba(255, 0, 212, 0.7);
 }
 
-.pc-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
+.custom-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  background: var(--color-arcade-neon-magenta);
-  box-shadow: 0 0 10px rgba(255, 0, 212, 0.5);
-  border: none;
-  cursor: pointer;
-}
-
-/* --- Battery Slider --- */
-.battery-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 8px;
-  border-radius: 4px;
-  background: var(--color-arcade-blue-gray);
-  outline: none;
-  cursor: pointer;
-}
-
-.battery-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--color-arcade-neon-yellow);
-  box-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-}
-
-.battery-slider::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 20px rgba(255, 247, 0, 0.8);
-}
-
-.battery-slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--color-arcade-neon-yellow);
-  box-shadow: 0 0 10px rgba(255, 247, 0, 0.5);
+  background: var(--color-accent);
+  box-shadow: 0 0 8px rgba(255, 0, 212, 0.4);
   border: none;
   cursor: pointer;
 }

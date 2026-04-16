@@ -12,7 +12,7 @@ export const EquipmentRow = memo(function EquipmentRow({ equipment }: { equipmen
   return (
     <div
       className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
-        isActive ? 'bg-arcade-blue/10' : 'bg-transparent'
+        isActive ? 'bg-white/5' : ''
       }`}
     >
       <button
@@ -24,7 +24,7 @@ export const EquipmentRow = memo(function EquipmentRow({ equipment }: { equipmen
           dispatch({ type: 'TOGGLE_EQUIPMENT', payload: { id: equipment.id } })
         }
         className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ${
-          isActive ? 'bg-arcade-neon-magenta' : 'bg-arcade-blue-gray/30'
+          isActive ? 'bg-accent' : 'bg-white/10'
         }`}
       >
         <span
@@ -36,14 +36,14 @@ export const EquipmentRow = memo(function EquipmentRow({ equipment }: { equipmen
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className={`truncate text-sm font-medium ${isActive ? 'text-arcade-white' : 'text-arcade-blue-gray'}`}>
+          <span className={`truncate text-sm font-medium ${isActive ? 'text-text-primary' : 'text-text-secondary'}`}>
             {equipment.name}
           </span>
           {equipment.quantity > 1 && (
-            <span className="shrink-0 text-xs text-arcade-blue-gray">×{equipment.quantity}</span>
+            <span className="shrink-0 text-xs text-text-muted">×{equipment.quantity}</span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-arcade-blue-gray/70">
+        <div className="flex items-center gap-1.5 text-xs text-text-muted">
           <span>{equipment.brand}</span>
           <span>·</span>
           <span>{formatWatts(watts)}</span>
